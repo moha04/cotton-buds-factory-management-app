@@ -30,7 +30,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (key: string): string => {
-    const { translations, getNestedTranslation } = require('@/lib/i18n');
+    const { translations, getNestedTranslation } = await import('@/lib/i18n');
     return getNestedTranslation(translations[language], key);
   };
 
