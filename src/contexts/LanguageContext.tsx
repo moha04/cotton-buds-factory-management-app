@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Language } from '@/lib/i18n';
+import { Language, translations, getNestedTranslation } from '@/lib/i18n';
 
 interface LanguageContextType {
   language: Language;
@@ -30,7 +30,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (key: string): string => {
-    const { translations, getNestedTranslation } = await import('@/lib/i18n');
     return getNestedTranslation(translations[language], key);
   };
 
