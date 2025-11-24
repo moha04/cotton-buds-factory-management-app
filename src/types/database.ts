@@ -1,78 +1,54 @@
 
-export interface CompanySettings {
+export interface CompanyInfo {
   id: string;
-  company_name: string;
-  company_name_ar: string;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  nif: string;
+  nis: string;
+  article_imposition: string;
+  rc: string;
   logo_url?: string;
-  address?: string;
-  address_ar?: string;
-  phone?: string;
-  email?: string;
-  default_language: 'en' | 'ar';
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface RawMaterial {
   id: string;
   name: string;
-  name_ar: string;
-  unit: 'kg' | 'grams' | 'units';
+  unit: string;
   current_stock: number;
-  unit_price_dzd: number;
-  total_value_dzd: number;
-  reorder_level?: number;
-  created_at: string;
-  updated_at: string;
+  unit_price: number;
+  reorder_level: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Product {
   id: string;
   name: string;
-  name_ar: string;
   pieces_per_unit: number;
   pieces_per_carton: number;
-  production_cost_dzd: number;
-  sell_price_unit_dzd: number;
-  sell_price_carton_dzd: number;
-  current_stock_units: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface FixedCost {
-  id: string;
-  name: string;
-  name_ar: string;
-  amount_dzd: number;
-  frequency: 'monthly' | 'annual' | 'one-time';
-  category: 'salary' | 'rent' | 'utilities' | 'other';
-  created_at: string;
-  updated_at: string;
-}
-
-export interface MaterialMovement {
-  id: string;
-  material_id: string;
-  quantity: number;
-  movement_type: 'stock_to_production' | 'purchase' | 'adjustment';
-  reference_id?: string;
-  notes?: string;
-  created_at: string;
-  created_by?: string;
+  production_cost: number;
+  sell_price_unit: number;
+  sell_price_carton: number;
+  current_stock: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ProductionBatch {
   id: string;
   product_id: string;
-  quantity_produced: number;
-  material_costs_dzd: number;
-  fixed_costs_allocated_dzd: number;
-  total_cost_dzd: number;
-  unit_cost_dzd: number;
+  quantity: number;
+  material_costs: number;
+  fixed_costs: number;
+  total_cost: number;
+  unit_cost: number;
   production_date: string;
   notes?: string;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface Sale {
@@ -81,20 +57,60 @@ export interface Sale {
   quantity_units: number;
   quantity_cartons: number;
   total_pieces: number;
-  unit_price_dzd: number;
-  total_amount_dzd: number;
-  customer_name?: string;
+  unit_price: number;
+  total_amount: number;
+  customer_name: string;
+  customer_address?: string;
+  customer_nif?: string;
   sale_date: string;
-  notes?: string;
-  created_at: string;
+  invoice_number: string;
+  created_at?: string;
 }
 
-export interface InventoryTransaction {
+export interface Invoice {
   id: string;
-  product_id: string;
-  quantity_change: number;
-  transaction_type: 'production' | 'sale' | 'adjustment';
-  reference_id?: string;
-  notes?: string;
-  created_at: string;
+  sale_id: string;
+  invoice_number: string;
+  invoice_date: string;
+  subtotal: number;
+  tva_amount: number;
+  total_amount: number;
+  generated_at: string;
 }
+
+export type Database = {
+  public: {
+    Tables: {
+      company_info: {
+        Row: CompanyInfo;
+        Insert: Omit<CompanyInfo, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<CompanyInfo, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      raw_materials: {
+        Row: RawMaterial;
+        Insert: Omit<RawMaterial, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<RawMaterial, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      products: {
+        Row: Product;
+        Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      production_batches: {
+        Row: ProductionBatch;
+        Insert: Omit<ProductionBatch, 'id' | 'created_at'>;
+        Update: Partial<Omit<ProductionBatch, 'id' | 'created_at'>>;
+      };
+      sales: {
+        Row: Sale;
+        Insert: Omit<Sale, 'id' | 'created_at'>;
+        Update: Partial<Omit<Sale, 'id' | 'created_at'>>;
+      };
+      invoices: {
+        Row: Invoice;
+        Insert: Omit<Invoice, 'id'>;
+        Update: Partial<Omit<Invoice, 'id'>>;
+      };
+    };
+  };
+};
