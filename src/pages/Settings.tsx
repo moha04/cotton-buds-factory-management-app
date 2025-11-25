@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/lib/supabase';
-import { Building2, Save } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { Building2, Save, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface CompanyInfo {
   id?: string;
@@ -116,12 +117,31 @@ export default function Settings() {
     );
   }
 
+  const supabaseConfigured = isSupabaseConfigured();
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">{t('settings.title')}</h1>
         <p className="text-muted-foreground mt-1">Configure application settings</p>
       </div>
+
+      {!supabaseConfigured && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Supabase Not Configured</AlertTitle>
+          <AlertDescription>
+            This application requires Supabase to be configured. Please link your Supabase project to enable database functionality.
+            <br />
+            <strong>Steps to configure:</strong>
+            <ol className="list-decimal ml-5 mt-2">
+              <li>Link your Buildify project to Supabase</li>
+              <li>Set up the database schema (Task 3 in planning document)</li>
+              <li>Refresh this page</li>
+            </ol>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader>
@@ -237,7 +257,7 @@ export default function Settings() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button onClick={handleSave} disabled={saving} className="gap-2">
+            <Button onClick={handleSave} disabled={saving || !supabaseConfigured} className="gap-2">
               <Save className="h-4 w-4" />
               {saving ? t('common.loading') : t('common.save')}
             </Button>
