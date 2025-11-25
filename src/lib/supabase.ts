@@ -9,6 +9,7 @@ export function isSupabaseConfigured(): boolean {
 }
 
 // Create a dummy client if not configured to prevent errors
-export const supabase = isSupabaseConfigured() 
+export const supabase = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey)
-  : createClient('https://placeholder.supabase.co', 'placeholder-key');
+  : null;
+
